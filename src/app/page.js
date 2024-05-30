@@ -4,7 +4,7 @@ import { useState } from 'react'
 // Data imports
 import { gallenteShipBps } from '@/data/itemData'
 // Util imports
-import { addCommas } from '@/utils/calculationUtils'
+import { addCommas, handleItemSelect } from '@/utils/calculationUtils'
 // Component imports
 import ItemCard from '@/components/ItemCard'
 
@@ -17,11 +17,6 @@ export default function Home() {
   const [sellPrice, setSellPrice] = useState(0)
   const [profit, setProfit] = useState(0)
   const [profitRatio, setProfitRatio] = useState(0)
-
-  const handleItemSelect = (item) => {
-    setLpCost(item.lp)
-    setIskCost(item.isk)
-  }
 
   const handleInputChange = (event) => {
     const { name, value } = event.target
@@ -75,6 +70,8 @@ export default function Home() {
             lp={item.lp}
             isk={item.isk}
             handleItemSelect={handleItemSelect}
+            setLpCost={setLpCost}
+            setIskCost={setIskCost}
           />
         ))}
       </section>
