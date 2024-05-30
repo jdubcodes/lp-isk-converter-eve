@@ -1,6 +1,6 @@
 'use client'
 
-import { gallenteShipBps } from '../../public/data'
+import { gallenteShipBps } from '../../public/itemData'
 
 import { useState } from 'react'
 
@@ -69,7 +69,11 @@ export default function Home() {
       </h1>
       <section className='flex gap-4 flex-wrap'>
         {gallenteShipBps.map((item, index) => (
-          <div key={index} onClick={() => handleShipSelect(item)}>
+          <div
+            key={index}
+            onClick={() => handleShipSelect(item)}
+            className='cursor-pointer'
+          >
             <h4>{item.bp}</h4>
             <ul>
               <li>{addCommas(item.lp)} LP</li>
