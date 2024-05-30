@@ -1,113 +1,168 @@
-import Image from "next/image";
+'use client'
+
+import { gallenteShipBps } from '../../public/data'
+
+import { useState } from 'react'
 
 export default function Home() {
+  const [lpCost, setLpCost] = useState(0)
+  const [iskCost, setIskCost] = useState(0)
+  const [manufacturingCost, setManufacturingCost] = useState(0)
+  const [materialCost, setMaterialCost] = useState(0)
+  const [brokersFee, setBrokersFee] = useState(0)
+  const [sellPrice, setSellPrice] = useState(0)
+  const [profit, setProfit] = useState(0)
+  const [profitRatio, setProfitRatio] = useState(0)
+
+  const handleShipSelect = (item) => {
+    setLpCost(item.lp)
+    setIskCost(item.isk)
+  }
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target
+    switch (name) {
+      case 'LP Cost':
+        setLpCost(parseFloat(value))
+        break
+      case 'ISK Cost':
+        setIskCost(parseFloat(value))
+        break
+      case 'Manufacturing Cost':
+        setManufacturingCost(parseFloat(value))
+        break
+      case 'Material Cost':
+        setMaterialCost(parseFloat(value))
+        break
+      case 'Brokers Fee':
+        setBrokersFee(parseFloat(value))
+        break
+      case 'Sell Price':
+        setSellPrice(parseFloat(value))
+        break
+      default:
+        break
+    }
+  }
+
+  const calculateProfit = () => {
+    const totalCost =
+      parseFloat(iskCost) +
+      parseFloat(materialCost) +
+      parseFloat(manufacturingCost) +
+      parseFloat(brokersFee)
+    const profit = parseFloat(sellPrice) - totalCost
+    const profitRatio = profit / lpCost
+    setProfit(profit)
+    setProfitRatio(profitRatio)
+    return profit
+  }
+
+  const addCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+      <h1 className='text-center text-3xl mt-4'>
+        Loyalty Point to ISK Converter
+      </h1>
+      <section className='flex gap-4 flex-wrap'>
+        {gallenteShipBps.map((item, index) => (
+          <div key={index} onClick={() => handleShipSelect(item)}>
+            <h4>{item.bp}</h4>
+            <ul>
+              <li>{addCommas(item.lp)} LP</li>
+              <li>
+                {addCommas(item.isk)} ISK{' '}
+                {item.altCurrency
+                  ? `or ${item.altCurrency} x ${item.altCost}`
+                  : ''}
+              </li>
+            </ul>
+          </div>
+        ))}
+      </section>
+      <section className='mt-16 flex flex-col gap-4 justify-center items-center'>
+        <div className='flex gap-2'>
+          <label htmlFor='lp-cost'>LP Cost:</label>
+          <input
+            type='number'
+            id='lp-cost'
+            name='LP Cost'
+            value={lpCost}
+            onChange={handleInputChange}
+            required
+            className='text-black'
+          />
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+        <div className='flex gap-2'>
+          <label htmlFor='isk-cost'>ISK Cost:</label>
+          <input
+            type='number'
+            id='isk-cost'
+            name='ISK Cost'
+            value={iskCost}
+            onChange={handleInputChange}
+            required
+            className='text-black'
+          />
+        </div>
+        <div className='flex gap-2'>
+          <label htmlFor='manufacturing-cost'>Manufacturing Cost:</label>
+          <input
+            type='number'
+            id='manufacturing-cost'
+            name='Manufacturing Cost'
+            onChange={handleInputChange}
+            required
+            className='text-black'
+          />
+        </div>
+        <div className='flex gap-2'>
+          <label htmlFor='material-cost'>Material Cost:</label>
+          <input
+            type='number'
+            id='material-cost'
+            name='Material Cost'
+            onChange={handleInputChange}
+            required
+            className='text-black'
+          />
+        </div>
+        <div className='flex gap-2'>
+          <label htmlFor='brokers-fee'>Brokers Fee:</label>
+          <input
+            type='number'
+            id='brokers-fee'
+            name='Brokers Fee'
+            onChange={handleInputChange}
+            required
+            className='text-black'
+          />
+        </div>
+        <div className='flex gap-2'>
+          <label htmlFor='sell-price'>Sell Price:</label>
+          <input
+            type='number'
+            id='sell-price'
+            name='Sell Price'
+            onChange={handleInputChange}
+            required
+            className='text-black'
+          />
+        </div>
+      </section>
+      <section>
+        <button
+          onClick={calculateProfit}
+          className='bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded'
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+          Calculate Profit
+        </button>
+        <p>ISK Profit: {addCommas(profit)} ISK</p>
+        <p>ISK per LP: {parseFloat(profitRatio).toFixed(2)} ISK / LP</p>
+      </section>
+    </>
+  )
 }
