@@ -1,8 +1,12 @@
 'use client'
-
-import { gallenteShipBps } from '../../public/itemData'
-
+// React imports
 import { useState } from 'react'
+// Data imports
+import { gallenteShipBps } from '@/data/itemData'
+// Util imports
+import { addCommas } from '@/utils/calculationUtils'
+// Component imports
+import ItemCard from '@/components/ItemCard'
 
 export default function Home() {
   const [lpCost, setLpCost] = useState(0)
@@ -14,7 +18,7 @@ export default function Home() {
   const [profit, setProfit] = useState(0)
   const [profitRatio, setProfitRatio] = useState(0)
 
-  const handleShipSelect = (item) => {
+  const handleItemSelect = (item) => {
     setLpCost(item.lp)
     setIskCost(item.isk)
   }
@@ -58,37 +62,24 @@ export default function Home() {
     return profit
   }
 
-  const addCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  }
-
   return (
     <>
-      <h1 className='text-center text-3xl mt-4'>
+      <h1 className='text-center text-3xl mt-4 text-white'>
         Loyalty Point to ISK Converter
       </h1>
-      <section className='flex gap-4 flex-wrap'>
+      <section className='flex gap-4 flex-wrap text-white'>
         {gallenteShipBps.map((item, index) => (
-          <div
+          <ItemCard
             key={index}
-            onClick={() => handleShipSelect(item)}
-            className='cursor-pointer'
-          >
-            <h4>{item.bp}</h4>
-            <ul>
-              <li>{addCommas(item.lp)} LP</li>
-              <li>
-                {addCommas(item.isk)} ISK{' '}
-                {item.altCurrency
-                  ? `or ${item.altCurrency} x ${item.altCost}`
-                  : ''}
-              </li>
-            </ul>
-          </div>
+            bp={item.bp}
+            lp={item.lp}
+            isk={item.isk}
+            handleItemSelect={handleItemSelect}
+          />
         ))}
       </section>
-      <section className='mt-16 flex flex-col gap-4 justify-center items-center'>
-        <div className='flex gap-2'>
+      <section className='mt-16 flex flex-col gap-4 justify-center items-center child-flex-col'>
+        <div>
           <label htmlFor='lp-cost'>LP Cost:</label>
           <input
             type='number'
@@ -97,10 +88,9 @@ export default function Home() {
             value={lpCost}
             onChange={handleInputChange}
             required
-            className='text-black'
           />
         </div>
-        <div className='flex gap-2'>
+        <div>
           <label htmlFor='isk-cost'>ISK Cost:</label>
           <input
             type='number'
@@ -109,10 +99,9 @@ export default function Home() {
             value={iskCost}
             onChange={handleInputChange}
             required
-            className='text-black'
           />
         </div>
-        <div className='flex gap-2'>
+        <div>
           <label htmlFor='manufacturing-cost'>Manufacturing Cost:</label>
           <input
             type='number'
@@ -120,10 +109,9 @@ export default function Home() {
             name='Manufacturing Cost'
             onChange={handleInputChange}
             required
-            className='text-black'
           />
         </div>
-        <div className='flex gap-2'>
+        <div>
           <label htmlFor='material-cost'>Material Cost:</label>
           <input
             type='number'
@@ -131,10 +119,9 @@ export default function Home() {
             name='Material Cost'
             onChange={handleInputChange}
             required
-            className='text-black'
           />
         </div>
-        <div className='flex gap-2'>
+        <div>
           <label htmlFor='brokers-fee'>Brokers Fee:</label>
           <input
             type='number'
@@ -142,10 +129,9 @@ export default function Home() {
             name='Brokers Fee'
             onChange={handleInputChange}
             required
-            className='text-black'
           />
         </div>
-        <div className='flex gap-2'>
+        <div>
           <label htmlFor='sell-price'>Sell Price:</label>
           <input
             type='number'
@@ -153,7 +139,6 @@ export default function Home() {
             name='Sell Price'
             onChange={handleInputChange}
             required
-            className='text-black'
           />
         </div>
       </section>
